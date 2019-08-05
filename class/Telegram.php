@@ -11,6 +11,7 @@ class Telegram {
         ];
         if (!empty($reply_markup))
             $data['reply_markup'] = $reply_markup;
+        //return json_decode(file_get_contents(TG_API_URL . "sendMessage?" . http_build_query($data)));
         return self::send_request('sendMessage', $data);
     }
 
@@ -19,6 +20,7 @@ class Telegram {
             'chat_id' => $chat_id,
             'action' => $action
         ];
+        //file_get_contents(TG_API_URL . "sendChatAction?" . http_build_query($data));
         self::send_request('sendChatAction', $data);
     }
 
@@ -44,6 +46,7 @@ class Telegram {
         ];
         if (!empty($reply_markup))
             $data['reply_markup'] = $reply_markup;
+        //return json_decode(file_get_contents(TG_API_URL . "editMessageText?" . http_build_query($data)));
         return self::send_request('editMessageText', $data);
     }
 
@@ -59,18 +62,18 @@ class Telegram {
 
     static private function send_request($call, $data, $method = 'GET') {
         $ch = curl_init();
-        if ($method === 'GET')
-            $call .= '?' . http_build_query($data);
-        elseif ($method === 'POST') {
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        }
         if ($call === 'sendDocument')
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 "Content-Type:multipart/form-data"
             ]);
-        curl_setopt($ch, CURLOPT_URL, TG_API_URL . $call);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if ($method === 'GET')
+            $call .= '?' . http_build_query($data);
+        elseif ($method === 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
+        curl_setopt($ch, CURLOPT_URL, TG_API_URL . $call);
         curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
         $response = curl_exec($ch);
         curl_close($ch);
