@@ -11,8 +11,7 @@ class Telegram {
         ];
         if (!empty($reply_markup))
             $data['reply_markup'] = $reply_markup;
-        //return json_decode(file_get_contents(TG_API_URL . "sendMessage?" . http_build_query($data)));
-        return self::send_request('sendMessage', $data);
+        self::send_request_webhook('sendMessage', $data);
     }
 
     static public function send_chat_action($chat_id, $action) {
@@ -20,8 +19,7 @@ class Telegram {
             'chat_id' => $chat_id,
             'action' => $action
         ];
-        //file_get_contents(TG_API_URL . "sendChatAction?" . http_build_query($data));
-        self::send_request('sendChatAction', $data);
+        self::send_request_webhook('sendChatAction', $data);
     }
 
     static public function get_keyboard_markup($buttons) {
@@ -46,8 +44,7 @@ class Telegram {
         ];
         if (!empty($reply_markup))
             $data['reply_markup'] = $reply_markup;
-        //return json_decode(file_get_contents(TG_API_URL . "editMessageText?" . http_build_query($data)));
-        return self::send_request('editMessageText', $data);
+        self::send_request_webhook('editMessageText', $data);
     }
 
     static public function send_document($chat_id, $caption, $document) {
@@ -78,5 +75,12 @@ class Telegram {
         $response = curl_exec($ch);
         curl_close($ch);
         return $response;
+    }
+
+    static private function send_request_webhook($call, $parameters) {
+        $parameters['method'] = $call;
+        header("Content-Type: application/json");
+        echo json_encode($parameters);
+        return;
     }
 }
