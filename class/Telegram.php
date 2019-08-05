@@ -2,6 +2,18 @@
 
 class Telegram {
 
+    static public function send_message_directly($chat_id, $message, $reply_markup = []) {
+        $data = [
+            'chat_id' => $chat_id,
+            'text' => $message,
+            'parse_mode' => 'html',
+            'disable_web_page_preview' => true
+        ];
+        if (!empty($reply_markup))
+            $data['reply_markup'] = $reply_markup;
+        self::send_request('sendMessage', $data);
+    }
+
     static public function send_message($chat_id, $message, $reply_markup = []) {
         $data = [
             'chat_id' => $chat_id,

@@ -19,7 +19,7 @@ if (isset($_REQUEST['code']) && !empty($_REQUEST['code'])) {
             $error = true;
 
     if (!$error)
-        Telegram::send_message(
+        Telegram::send_message_directly(
             $client->chat_id(),
             'You successfully connect your Strava account ' . $auth_response->athlete->firstname . ' ' . $auth_response->athlete->lastname . '.' . "\n\n" .
             'Now you can use the following functions:',
